@@ -1,5 +1,6 @@
 # Ignore Java compiled files
 *.class
+*Prac.java
 
 # Ignore IDE files
 .vscode/

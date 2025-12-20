@@ -7,32 +7,64 @@ public class XORFactor {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter out = new PrintWriter(System.out);
 
-        int t = Integer.parseInt(br.readLine());
+        String firstLine = br.readLine();
+        if (firstLine == null)
+            return;
+        int t = Integer.parseInt(firstLine.trim());
 
         while (t-- > 0) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
+            String line = br.readLine();
+            if (line == null)
+                break;
+            StringTokenizer st = new StringTokenizer(line);
             int n = Integer.parseInt(st.nextToken());
             int k = Integer.parseInt(st.nextToken());
 
-            StringJoiner sj = new StringJoiner(" ");
+            int[] a = new int[k];
 
-            if (k % 2 != 0) {
-                // If k is odd, all elements can be n
-                // n ^ n ^ ... ^ n (odd times) = n
+            if ((k & 1) != 0) {
+                // If k is odd, setting all elements to n is the maximum possible.
+                // (n ^ n ^ ... ^ n) odd times = n
                 for (int i = 0; i < k; i++) {
-                    sj.add(String.valueOf(n));
+                    a[i] = n;
                 }
             } else {
-                // If k is even, k-1 elements can be n and the last one 0
-                // (n ^ ... ^ n) (even times) ^ 0 = 0 ^ 0 = 0 (Incorrect)
-                // Correct: (n ^ ... ^ n) (odd times) ^ 0 = n ^ 0 = n
-                for (int i = 0; i < k - 1; i++) {
-                    sj.add(String.valueOf(n));
+                // If k is even, we use the Tight/Loose greedy approach.
+                int p = 0; // Count of 'Loose' indices (numbers already < n)
+                for (int i = 30; i >= 0; i--) {
+                    int bitVal = (1 << i);
+                    if (((n >> i) & 1) != 0) {
+                        // n has a 1-bit: We can use k-1 ones.
+                        // We skip the first 'Tight' index to make it 'Loose'.
+                        int skipIndex = Math.min(p, k - 1);
+                        for (int j = 0; j < k; j++) {
+                            if (j != skipIndex) {
+                                a[j] |= bitVal;
+                            }
+                        }
+                        // The index we skipped is now Loose.
+                        if (p < k)
+                            p++;
+                    } else {
+                        // n has a 0-bit: Only 'Loose' indices can take a 1-bit.
+                        // We take the largest even number of Loose indices.
+                        int count = (p / 2) * 2;
+                        for (int j = 0; j < count; j++) {
+                            a[j] |= bitVal;
+                        }
+                    }
                 }
-                sj.add("0");
             }
 
-            out.println(sj.toString());
+            // Print the sequence
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < k; i++) {
+                sb.append(a[i]).append(i == k - 1 ? "" : " ");
+            }
+            out.println(sb.toString());
+            // If u want individual prints then close the outer out.flush(); and
+            // uncomment the below
+            // out.flush();
         }
         out.flush();
         out.close();
