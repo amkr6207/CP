@@ -1,3 +1,5 @@
+// https://leetcode.com/problems/minimum-number-of-operations-to-have-distinct-elements/
+
 import java.util.*;
 
 public class MinOperations {
@@ -44,4 +46,47 @@ public class MinOperations {
 
         return ops;
     }
+
 }
+
+// BruteForce Approach (Inefficient)
+
+// import java.util.*;
+
+// class Solution {
+// public int minimumOperations(int[] nums) {
+// List<Integer> list = new ArrayList<>();
+// for (int num : nums)
+// list.add(num);
+
+// int operations = 0;
+
+// while (!list.isEmpty()) {
+// // Check if array has duplicates
+// Set<Integer> set = new HashSet<>(list);
+// if (set.size() == list.size()) {
+// // all elements are distinct → stop
+// break;
+// }
+
+// // Perform one operation: remove first 3 elements
+// int removeCount = Math.min(3, list.size());
+// for (int i = 0; i < removeCount; i++) {
+// list.remove(0); // remove first element
+// }
+// operations++;
+// }
+
+// return operations;
+// }
+
+// // Testing the code
+// public static void main(String[] args) {
+// Solution sol = new Solution();
+// System.out.println(sol.minimumOperations(new int[] { 3, 8, 3, 6, 5, 8 })); //
+// Output: 1
+// System.out.println(sol.minimumOperations(new int[] { 2, 2 })); // Output: 1
+// System.out.println(sol.minimumOperations(new int[] { 4, 3, 5, 1, 2 })); //
+// Output: 0
+// }
+// }
